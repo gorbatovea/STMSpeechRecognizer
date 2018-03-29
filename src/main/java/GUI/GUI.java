@@ -12,7 +12,7 @@ public class GUI extends JFrame {
     private JButton stopButton = new JButton("STOP");
     private JTextArea text = new JTextArea("Press START");
     private IAudioHandler audioHandler;
-    public boolean started = false;
+    private boolean started = false;
 
     public GUI(IAudioHandler audioHandler) {
         super("STM Speech Recognition");
@@ -33,19 +33,11 @@ public class GUI extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             started = true;
-            Thread listenThread = new Thread(){
-                @Override
-                public void run(){
-                    audioHandler.listen();
-                }
-            };
-            Thread executionHandler = new Thread(){
-                @Override
-                public void run(){
-                    while(!audioHandler.isFetched()){}
-                    stopExec();
-                }
-            };
+            Thread listenThread = new Thread(() -> audioHandler.listen());
+            Thread executionHandler = new Thread(() -> {
+                while(!audioHandler.isFetched()){}
+                stopExec();
+            });
             listenThread.start();
             executionHandler.start();
             text.setText("Working...");
@@ -64,7 +56,7 @@ public class GUI extends JFrame {
         if (!started) return;
         else started = false;
         audioHandler.stop();
-        while (!audioHandler.isFetched()) {};
+        while (!audioHandler.isFetched()) {}
         text.setText(audioHandler.getResult());
     }
 }

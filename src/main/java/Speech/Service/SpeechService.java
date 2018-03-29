@@ -11,8 +11,8 @@ import java.util.Properties;
 public class SpeechService implements ISpeechService{
     private String preBuildedHostEndPoint;
     private ArrayList<Pair<String, String>> requestHeader;
-    HTTPClient httpClient;
-    Properties configuration;
+    private HTTPClient httpClient;
+    private Properties configuration;
 
     public SpeechService(Properties props){
         this.configuration = props;
@@ -23,12 +23,12 @@ public class SpeechService implements ISpeechService{
                 props.getProperty("speech.platform.endpoint");
         this.requestHeader = new ArrayList<>();
         this.requestHeader.add(
-                new Pair<String, String>(
+                new Pair<>(
                         props.getProperty("post.header.param.content-type"),
                         props.getProperty("post.header.value.content-type")));
         this.httpClient = new HTTPClient();
         this.requestHeader.add(
-                new Pair<String, String>(
+                new Pair<>(
                         props.getProperty("post.header.param.subscription-key"),
                         props.getProperty("post.header.value.subscription-key")));
     }

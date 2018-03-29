@@ -34,7 +34,7 @@ public class HTTPClient implements IHTTPClient {
             StringBuffer response = new StringBuffer();
             while((output = input.readLine()) != null){
                 response.append(output);
-            };
+            }
             input.close();
             return response.toString();
         }catch (java.net.MalformedURLException mE){

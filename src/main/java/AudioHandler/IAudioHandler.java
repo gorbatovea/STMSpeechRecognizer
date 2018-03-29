@@ -1,8 +1,8 @@
 package AudioHandler;
 
 public interface IAudioHandler {
-    public void listen();
-    public String getResult();
-    public boolean isFetched();
-    public void stop();
+    void listen();
+    String getResult();
+    boolean isFetched();
+    void stop();
 }

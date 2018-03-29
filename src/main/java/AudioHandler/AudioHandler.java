@@ -74,39 +74,33 @@ public class AudioHandler implements IAudioHandler{
             //Needs to be logged
             System.out.println("Starting rec...");
             targetDataLine.start();
-            Thread timeOutHadler = new Thread(){
-                @Override
-                public void run(){
-                    long startTime = System.currentTimeMillis(),
-                            currentTime = System.currentTimeMillis();
-
-                    while(currentTime - startTime < timeOut){
-                        if (!isListening) break;
+            Thread timeOutHadler = new Thread(() -> {
+                long startTime = System.currentTimeMillis(),
                         currentTime = System.currentTimeMillis();
-                    }
-                    if (isListening) targetDataLine.stop();
+
+                while(currentTime - startTime < timeOut){
+                    if (!isListening) break;
+                    currentTime = System.currentTimeMillis();
                 }
-            };
-            Thread recordingThread = new Thread(){
-                @Override
-                public void run() {
-                    AudioInputStream stream = new AudioInputStream(targetDataLine);
-                    File recordedFile = new File("Targets/record.wav");
-                    try {
-                        timeOutHadler.start();
-                        AudioSystem.write(stream, AudioFileFormat.Type.WAVE, recordedFile);
-                        //Needs to be logged
-                        System.out.println("Stopped recording");
-                        isListening = false;
-                    }catch (IOException ioEx){ ioEx.printStackTrace(); }
-                }
-            };
+                if (isListening) targetDataLine.stop();
+            });
+            Thread recordingThread = new Thread(() -> {
+                AudioInputStream stream = new AudioInputStream(targetDataLine);
+                File recordedFile = new File("Targets/record.wav");
+                try {
+                    timeOutHadler.start();
+                    AudioSystem.write(stream, AudioFileFormat.Type.WAVE, recordedFile);
+                    //Needs to be logged
+                    System.out.println("Stopped recording");
+                    isListening = false;
+                }catch (IOException ioEx){ ioEx.printStackTrace(); }
+            });
             //Needs to be logged
             System.out.println("Writing in file!");
             recordingThread.start();
             //Needs to be logged
             System.out.println("Running until manual break(timeout=" + Long.toString(timeOut) + ")!");
-            while(this.isListening){};
+            while(this.isListening){}
             if (timeOutHadler.isAlive()) timeOutHadler.interrupt();
             targetDataLine.close();
             //Needs to be logged
