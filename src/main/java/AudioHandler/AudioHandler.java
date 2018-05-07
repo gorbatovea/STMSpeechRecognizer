@@ -87,6 +87,17 @@ public class AudioHandler implements IAudioHandler{
             Thread recordingThread = new Thread(() -> {
                 AudioInputStream stream = new AudioInputStream(targetDataLine);
                 File recordedFile = new File("Targets/record.wav");
+                if (!recordedFile.exists()) {
+                    try {
+                        if (!recordedFile.getParentFile().exists()) {
+                            recordedFile.getParentFile().mkdir();
+                        }
+                        recordedFile.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
                 try {
                     timeOutHadler.start();
                     AudioSystem.write(stream, AudioFileFormat.Type.WAVE, recordedFile);
